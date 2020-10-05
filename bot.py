@@ -11,7 +11,7 @@ SERVERS = [
     ("freenode", "chat.freenode.net"),
     ("tilde", "irc.tilde.chat"),
     ("technet","mercury.technet.xi.ht"),
-    #("vulpineawoo","irc.wppnx.pii.at"),
+    ("vulpineawoo","irc.wppnx.pii.at"),
 ]
 
 class Server(BaseServer):
