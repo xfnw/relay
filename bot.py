@@ -27,7 +27,7 @@ class Server(BaseServer):
             if nick == self.nickname or line.tags and "batch" in line.tags:
                 return
             for i in self.bot.servers:
-                await self.bot.servers[i].bc(self.name,nick,text)
+                asyncio.create_task(self.bot.servers[i].bc(self.name,nick,text))
             #await self.send(build("PRIVMSG ##xfnw :ine and boat ",[text]))
         if line.command == "INVITE":
             await self.send(build("JOIN",[line.params[1]]))
