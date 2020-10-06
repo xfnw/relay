@@ -23,7 +23,7 @@ class Server(BaseServer):
             self.chan = "##xfnw" if self.name == "freenode" else "#xfnw"
             await self.send(build("JOIN", [self.chan]))
         if line.command == "PRIVMSG" and line.params.pop(0) == self.chan:
-            text = line.params[0]
+            text = line.params[0].replace("\1ACTION","*").replace("\1","")
             nick = line.source.split('!')[0]
             if nick == self.nickname or line.tags and "batch" in line.tags:
                 return
