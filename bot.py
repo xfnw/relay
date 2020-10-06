@@ -10,7 +10,7 @@ from ircrobots import ConnectionParams
 SERVERS = [
     ("freenode", "chat.freenode.net"),
     ("tilde", "irc.tilde.chat"),
-    ("technet","mercury.technet.xi.ht"),
+    ("technet","irc.technet.xi.ht"),
     ("vulpineawoo","irc.wppnx.pii.at"),
     ("alphachat","irc.alphachat.net"),
 ]
