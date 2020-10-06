@@ -8,11 +8,12 @@ from ircrobots import Server as BaseServer
 from ircrobots import ConnectionParams
 
 SERVERS = [
-    ("freenode", "chat.freenode.net"),
-    ("tilde", "irc.tilde.chat"),
-    ("technet","irc.technet.xi.ht"),
-    ("vulpineawoo","irc.wppnx.pii.at"),
-    ("alphachat","irc.alphachat.net"),
+    ("freenode", "chat.freenode.net", 6697, True),
+    ("tilde", "irc.tilde.chat", 6697, True),
+    ("technet","irc.technet.xi.ht", 6697, True),
+    ("vulpineawoo","irc.wppnx.pii.at", 6697, True),
+    ("alphachat","irc.alphachat.net", 6697, True),
+    ("openirc","91.188.125.227",6668,False),
 ]
 
 class Server(BaseServer):
@@ -46,8 +47,8 @@ class Bot(BaseBot):
 bot = 0
 async def main():
     bot = Bot()
-    for name, host in SERVERS:
-        params = ConnectionParams("xfnwRelay", host, 6697, True)
+    for name, host, port, ssl in SERVERS:
+        params = ConnectionParams("xfnwRelay", host, port, ssl)
         await bot.add_server(name, params)
 
     await bot.run()
