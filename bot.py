@@ -12,6 +12,7 @@ SERVERS = [
     ("tilde", "irc.tilde.chat"),
     ("technet","mercury.technet.xi.ht"),
     ("vulpineawoo","irc.wppnx.pii.at"),
+    ("alphachat","irc.alphachat.net"),
 ]
 
 class Server(BaseServer):
