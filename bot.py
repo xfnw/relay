@@ -35,7 +35,7 @@ class Server(BaseServer):
     async def line_send(self, line: Line):
         print(f"{self.name} > {line.format()}")
     async def bc(self,name,nick,msg):
-        if name == self.name:
+        if name == self.name or "chan" not in list(dir(self)):
             return
         await self.send(build("PRIVMSG",[self.chan,"<"+nick+"@"+name+"> "+msg]))
 
