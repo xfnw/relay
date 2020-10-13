@@ -64,7 +64,7 @@ class Server(BaseServer):
     async def line_send(self, line: Line):
         print(f"{self.name} > {line.format()}")
     async def bc(self,name,nick,msg):
-        if not self.disconnected and name == self.name or "chan" not in list(dir(self)):
+        if self.disconnected or name == self.name or "chan" not in list(dir(self)):
             return
         await self.send(build("PRIVMSG",[self.chan,"<"+nick+"@"+name+"> "+msg]))
 
