@@ -6,6 +6,9 @@ from irctokens import build, Line
 from ircrobots import Bot as BaseBot
 from ircrobots import Server as BaseServer
 from ircrobots import ConnectionParams
+# aaaaaaaaaaaaaAAAAAAAAAAAAAAA
+# im too lazy to import more stuffs :tm:
+from ircrobots.server import *
 
 SERVERS = [
     ("freenode", "chat.freenode.net", 6697, True),
@@ -17,6 +20,31 @@ SERVERS = [
 ]
 
 class Server(BaseServer):
+
+    # overwrite connect so i can put try except blocks there
+    async def connect(self,
+            transport: ITCPTransport,
+            params: ConnectionParams):
+        try:
+            await sts_transmute(params)
+            await resume_transmute(params)
+
+            reader, writer = await transport.connect(
+                params.host,
+                params.port,
+                tls       =params.tls,
+                tls_verify=params.tls_verify,
+                bindhost  =params.bindhost)
+
+            self._reader = reader
+            self._writer = writer
+
+            self.params = params
+            await self.handshake()
+        except:
+            print('connection with {} failed, disconnecting'.format(self.name))
+            self.disconnected = True
+
     async def line_read(self, line: Line):
         print(f"{self.name} < {line.format()}")
         if line.command == "001":
@@ -36,7 +64,7 @@ class Server(BaseServer):
     async def line_send(self, line: Line):
         print(f"{self.name} > {line.format()}")
     async def bc(self,name,nick,msg):
-        if name == self.name or "chan" not in list(dir(self)):
+        if self.disconnected or name == self.name or "chan" not in list(dir(self)):
             return
         await self.send(build("PRIVMSG",[self.chan,"<"+nick+"@"+name+"> "+msg]))
 
