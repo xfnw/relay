@@ -10,14 +10,7 @@ from ircrobots import ConnectionParams
 # im too lazy to import more stuffs :tm:
 from ircrobots.server import *
 
-SERVERS = [
-    ("freenode", "chat.freenode.net", 6697, True),
-    ("tilde", "irc.tilde.chat", 6697, True),
-    ("technet","irc.technet.xi.ht", 6697, True),
-    ("vulpineawoo","irc.wppnx.pii.at", 6697, True),
-    ("alphachat","irc.alphachat.net", 6697, True),
-    ("openirc","91.188.125.227",6668,False),
-]
+from config import *
 
 class Server(BaseServer):
 
@@ -49,12 +42,12 @@ class Server(BaseServer):
         print(f"{self.name} < {line.format()}")
         if line.command == "001":
             print(f"connected to {self.isupport.network}")
-            self.chan = "##xfnw" if self.name == "freenode" else "#xfnw"
+            self.chan = FNCHANNEL if self.name == "freenode" else CHANNEL
             await self.send(build("JOIN", [self.chan]))
         if line.command == "PRIVMSG" and line.params.pop(0) == self.chan:
             text = line.params[0].replace("\1ACTION","*").replace("\1","")
             nick = line.source.split('!')[0]
-            if nick == self.nickname or line.tags and "batch" in line.tags:
+            if nick == self.nickname or (line.tags and "batch" in line.tags) or "\x0f\x0f\x0f\x0f" in text:
                 return
             for i in self.bot.servers:
                 asyncio.create_task(self.bot.servers[i].bc(self.name,nick,text))
@@ -66,7 +59,7 @@ class Server(BaseServer):
     async def bc(self,name,nick,msg):
         if self.disconnected or name == self.name or "chan" not in list(dir(self)):
             return
-        await self.send(build("PRIVMSG",[self.chan,"<"+nick[:1]+"\u200c"+nick[1:]+"@"+name+"> "+msg]))
+        await self.send(build("PRIVMSG",[self.chan,"\x0f\x0f\x0f\x0f<"+nick[:1]+"\u200c"+nick[1:]+"@"+name+"> "+msg]))
 
 class Bot(BaseBot):
     def create_server(self, name: str):
@@ -76,7 +69,7 @@ bot = 0
 async def main():
     bot = Bot()
     for name, host, port, ssl in SERVERS:
-        params = ConnectionParams("xfnwRelay", host, port, ssl)
+        params = ConnectionParams(NICKNAME, host, port, ssl)
         await bot.add_server(name, params)
 
     await bot.run()
