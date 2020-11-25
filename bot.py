@@ -66,7 +66,7 @@ class Server(BaseServer):
     async def bc(self,name,nick,msg):
         if self.disconnected or name == self.name or "chan" not in list(dir(self)):
             return
-        await self.send(build("PRIVMSG",[self.chan,"<"+nick+"@"+name+"> "+msg]))
+        await self.send(build("PRIVMSG",[self.chan,"<"+nick[:1]+"\u200c"+nick[1:]+"@"+name+"> "+msg]))
 
 class Bot(BaseBot):
     def create_server(self, name: str):
