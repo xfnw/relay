@@ -1,0 +1,13 @@
+
+SERVERS = [
+    ("freenode", "chat.freenode.net.invalid", 6697, True),
+    ("tilde", "irc.tilde.chat.invalid", 6697, True),
+    ("technet","irc.technet.xi.ht.invalid", 6697, True),
+    ("vulpineawoo","irc.wppnx.pii.at.invalid", 6697, True),
+    ("alphachat","irc.alphachat.net.invalid", 6697, True),
+]
+
+NICKNAME = 'testrelay'
+CHANNEL = '#testrelay'
+FNCHANNEL = '##testrelay'
+
