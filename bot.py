@@ -49,6 +49,12 @@ class Server(BaseServer):
             nick = line.source.split('!')[0]
             if nick == self.nickname or (line.tags and "batch" in line.tags) or "\x0f\x0f\x0f\x0f" in text:
                 return
+            if nick.lower() in self.users and self.users[nick.lower()].account in ADMINS:
+                if text[:len(self.nickname)+2].lower() == f'{self.nickname}: '.lower():
+                    args = text[len(self.nickname)+2:].split(' ')
+                    for i in self.bot.servers:
+                        asyncio.create_task(self.bot.servers[i].ac(self.name,args))
+                    return
             for i in self.bot.servers:
                 asyncio.create_task(self.bot.servers[i].bc(self.name,nick,text))
             #await self.send(build("PRIVMSG ##xfnw :ine and boat ",[text]))
@@ -60,6 +66,10 @@ class Server(BaseServer):
         if self.disconnected or name == self.name or "chan" not in list(dir(self)):
             return
         await self.send(build("PRIVMSG",[self.chan,"\x0f\x0f\x0f\x0f<"+nick[:1]+"\u200c"+nick[1:]+"@"+name+"> "+msg]))
+    async def ac(self,name,args):
+        if self.disconnected  or "chan" not in list(dir(self)):
+            return
+        await self.send(build(args[0],[self.chan]+args[1:]))
 
 class Bot(BaseBot):
     def create_server(self, name: str):

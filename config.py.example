@@ -1,4 +1,5 @@
 
+#     name        hostname                    port  tls
 SERVERS = [
     ("freenode", "chat.freenode.net.invalid", 6697, True),
     ("tilde", "irc.tilde.chat.invalid", 6697, True),
@@ -10,4 +11,6 @@ SERVERS = [
 NICKNAME = 'testrelay'
 CHANNEL = '#testrelay'
 FNCHANNEL = '##testrelay'
+
+ADMINS=['jess']
 
