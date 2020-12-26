@@ -41,7 +41,7 @@ class Server(BaseServer):
     async def line_read(self, line: Line):
         print(f"{self.name} < {line.format()}")
         if line.command == "001":
-            print(f"connected to {self.isupport.network}")
+            print(f"connected to {self.name}")
             self.chan = FNCHANNEL if self.name == "freenode" else CHANNEL
             await self.send(build("JOIN", [self.chan]))
         if line.command == "PRIVMSG" and line.params.pop(0) == self.chan:
@@ -52,6 +52,13 @@ class Server(BaseServer):
             if nick.lower() in self.users and self.users[nick.lower()].account in ADMINS:
                 if text[:len(self.nickname)+2].lower() == f'{self.nickname}: '.lower():
                     args = text[len(self.nickname)+2:].split(' ')
+                    if args[0] == 'connect' and len(args) > 1:
+                        if args[1] in self.bot.servers:
+                            asyncio.create_task(self.bot.disconnected(self.bot.servers[args[1]]))
+                            asyncio.create_task(self.send(build("PRIVMSG",[self.chan,"Connecting to {}...".format(args[1])])))
+                        else:
+                            asyncio.create_task(self.send(build("PRIVMSG",[self.chan,"Error: that is not a server"])))
+                        return
                     for i in self.bot.servers:
                         asyncio.create_task(self.bot.servers[i].ac(self.name,args))
                     return
@@ -75,7 +82,6 @@ class Bot(BaseBot):
     def create_server(self, name: str):
         return Server(self, name)
 
-bot = 0
 async def main():
     bot = Bot()
     for name, host, port, ssl in SERVERS:
