@@ -53,7 +53,7 @@ class Server(BaseServer):
                 if text[:len(self.nickname)+2].lower() == f'{self.nickname}: '.lower():
                     args = text[len(self.nickname)+2:].split(' ')
                     if args[0] == 'connect' and len(args) > 4:
-                        await self.bot.add_server(args[1],ConnectionParams(NICKNAME,args[2],args[3],bool(args[4])))
+                        await self.bot.add_server(args[1],ConnectionParams(NICKNAME,args[2],args[3],bool(int(args[4]))))
                         await self.send(build("PRIVMSG",[self.chan,"Connected to {} :3".format(args[1])]))
                         return
                     for i in self.bot.servers:
