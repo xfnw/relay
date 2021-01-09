@@ -73,7 +73,18 @@ class Server(BaseServer):
     async def ac(self,name,args):
         if self.disconnected  or "chan" not in list(dir(self)):
             return
-        await self.send(build(args[0],[self.chan]+args[1:]))
+        nargs = []
+        isComb = False
+        for arg in args:
+            if arg[0] == ':':
+                isComb = True
+                nargs.append(arg[1:])
+                continue
+            if isComb:
+                nargs[-1] += ' '+arg
+            else:
+                nargs.append(arg)
+        await self.send(build(nargs[0],[self.chan]+nargs[1:]))
 
 class Bot(BaseBot):
     def create_server(self, name: str):
