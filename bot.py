@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import asyncio
+import asyncio, random
 
 from irctokens import build, Line
 from ircrobots import Bot as BaseBot
@@ -56,10 +56,10 @@ class Server(BaseServer):
                         await self.bot.add_server(args[1],ConnectionParams(NICKNAME,args[2],args[3],bool(int(args[4]))))
                         await self.send(build("PRIVMSG",[self.chan,"Connected to {} :3".format(args[1])]))
                         return
-                    for i in self.bot.servers:
+                    for i in random.sample(list(self.bot.servers),len(self.bot.servers)):
                         asyncio.create_task(self.bot.servers[i].ac(self.name,args))
                     return
-            for i in self.bot.servers:
+            for i in random.sample(list(self.bot.servers),len(self.bot.servers)):
                 asyncio.create_task(self.bot.servers[i].bc(self.name,nick,text))
             #await self.send(build("PRIVMSG ##xfnw :ine and boat ",[text]))
         if line.command == "INVITE":
