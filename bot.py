@@ -59,6 +59,11 @@ class Server(BaseServer):
                     for i in random.sample(list(self.bot.servers),len(self.bot.servers)):
                         asyncio.create_task(self.bot.servers[i].ac(self.name,args))
                     return
+            for npn in NOPING:
+                offset = 1
+                for loc in find_all_indexes(text.lower(), npn.lower()):
+                    text = text[:loc+offset]+"\u200c"+text[loc+offset:]
+                    offset += 1
             for i in random.sample(list(self.bot.servers),len(self.bot.servers)):
                 asyncio.create_task(self.bot.servers[i].bc(self.name,nick,text))
             #await self.send(build("PRIVMSG ##xfnw :ine and boat ",[text]))
@@ -89,6 +94,22 @@ class Server(BaseServer):
 class Bot(BaseBot):
     def create_server(self, name: str):
         return Server(self, name)
+
+
+
+def find_all_indexes(input_str, search_str):
+    l1 = []
+    length = len(input_str)
+    index = 0
+    while index < length:
+        i = input_str.find(search_str, index)
+        if i == -1:
+            return l1
+        l1.append(i)
+        index = i + 1
+    return l1
+
+
 
 async def main():
     bot = Bot()
