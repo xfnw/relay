@@ -42,12 +42,14 @@ class Server(BaseServer):
         print(f"{self.name} < {line.format()}")
         if line.command == "001":
             print(f"connected to {self.name}")
-            self.chan = FNCHANNEL if self.name == "freenode" else CHANNEL
+            self.chan = FNCHANNEL if self.name in ["freenode","libera"] else CHANNEL
             await self.send(build("JOIN", [self.chan]))
         if line.command == "PRIVMSG" and line.params.pop(0) == self.chan:
             text = line.params[0].replace("\1ACTION","*").replace("\1","")
             nick = line.source.split('!')[0]
             if nick == self.nickname or (line.tags and "batch" in line.tags) or "\x0f\x0f\x0f\x0f" in text:
+                return
+            if self.disconnected:
                 return
             if nick.lower() in self.users and self.users[nick.lower()].account in ADMINS:
                 if text[:len(self.nickname)+2].lower() == f'{self.nickname}: '.lower():
@@ -55,6 +57,11 @@ class Server(BaseServer):
                     if args[0] == 'connect' and len(args) > 4:
                         await self.bot.add_server(args[1],ConnectionParams(NICKNAME,args[2],args[3],bool(int(args[4]))))
                         await self.send(build("PRIVMSG",[self.chan,"Connected to {} :3".format(args[1])]))
+                        return
+                    if args[0] == 'unlink' and len(args) > 1:
+                        await self.bot.servers[args[1]].disconnect()
+                        del self.bot.servers[args[1]]
+                        await self.send(build("PRIVMSG",[self.chan,"Unlinked {} :S".format(args[1])]))
                         return
                     for i in random.sample(list(self.bot.servers),len(self.bot.servers)):
                         asyncio.create_task(self.bot.servers[i].ac(self.name,args))
