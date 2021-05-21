@@ -1,10 +1,9 @@
 
 #     name        hostname                    port  tls
 SERVERS = [
-    ("freenode", "chat.freenode.net.invalid", 6697, True),
     ("tilde", "irc.tilde.chat.invalid", 6697, True),
     ("technet","irc.technet.xi.ht.invalid", 6697, True),
-    ("vulpineawoo","irc.wppnx.pii.at.invalid", 6697, True),
+    ("vulpineawoo","foxes.are.allowed.org.invalid", 6697, True),
     ("alphachat","irc.alphachat.net.invalid", 6697, True),
 ]
 
@@ -12,7 +11,10 @@ NICKNAME = 'testrelay'
 CHANNEL = '#testrelay'
 FNCHANNEL = '##testrelay'
 
+# nickserv accounts of people who can run admin commands
 ADMINS=['jess']
 
+# strings to break for preventing pings
+# unlikely to be useful unless you are on both sides of the relay on the same client
 NOPING=['MIF']
 
