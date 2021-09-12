@@ -14,6 +14,30 @@ from config import *
 
 class Server(BaseServer):
 
+    # overwrite connect so i can put try except blocks there
+    async def connect(self,
+            transport: ITCPTransport,
+            params: ConnectionParams):
+        try:
+            await sts_transmute(params)
+            await resume_transmute(params)
+
+            reader, writer = await transport.connect(
+                params.host,
+                params.port,
+                tls       =params.tls,
+                tls_verify=params.tls_verify,
+                bindhost  =params.bindhost)
+
+            self._reader = reader
+            self._writer = writer
+
+            self.params = params
+            await self.handshake()
+        except:
+            print('connection with {} failed, disconnecting'.format(self.name))
+            self.disconnected = True
+
     async def line_read(self, line: Line):
         print(f"{self.name} < {line.format()}")
         if line.command == "001":
